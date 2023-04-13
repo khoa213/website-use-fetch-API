@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+        <title>Project 4</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+            .search {
+                text-align: center;
+                background-color: rgb(210, 224, 131);
+            }
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0,0,0,0.3);
+            }
+            .formgroup {
+                width: 50%;
+                margin: auto;
+                display: block;
+                height: 50px;
+            }
+            .formgroup input{
+                
+                width: 70%;
+                height: 25px;
+                margin-right: 20px;
+                line-height: 50px;
+            }
+            .modal-content {
+                background-color: #fefefe;
+                margin: auto;
+                padding: 20px;
+                border: 1px solid #888;
+                width: 60%;
+            }
+            .close {
+                color: #aaaaaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            #myBtn:hover,
+            #myBtn:focus {
+                cursor: pointer;
+            }
+            #target {
+                text-align: center;
+            }
+            #timkiem {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="search"><h1>My News<i class="fa fa-search" aria-hidden="true" id="myBtn"></i></h1></div>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                
+                    <span class="close">&times;</span>
+                    <div class="formgroup">
+                        <b>Keywords:</b>
+                        <input type="text" name="keywords" id="keywords">
+                        <button onclick="searching()" id="searchButton">Search</button>
+                    </div>
+                
+            </div>
+        </div>
+        <div id="target"></div>
+        <div id="timkiem"></div>
+        <script>
+            var modal = document.getElementById('myModal');
+    var btn = document.getElementById("myBtn");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+        
+        var url = 'https://gnews.io/api/v4/top-headlines?&token=c539d252c8d0a7349c82e59ba7012c7a&lang=en';
+        fetch(url)
+        .then(function (response) {
+        return response.json();
+    })
+        .then(function(data){
+            var txt = "";
+    data.articles.forEach((element,i) => {
+         txt += ` <div>
+                   <img src=${element.image} alt=${element.name} width="100%">
+             </div>
+             <div>
+                <a href=${element.url} target= "_blank"><h2>${element.title}</h2></a> 
+                </div>
+             <div> 
+                  <p>${element.description}</p> 
+             </div>`;
+    })
+       document.querySelector("#target").innerHTML=txt;   
+    });
+    function searching() {
+            var modal = document.getElementById('myModal');
+            var keyword = document.getElementById("keywords").value;
+            var urls = 'https://gnews.io/api/v4/search?q='+ keyword + '&token=c539d252c8d0a7349c82e59ba7012c7a&lang=en';
+            modal.style.display = "none";
+            document.getElementById("target").style.display = "none";
+            fetch(urls)
+            .then(function (response) {
+            return response.json();
+    })
+            .then(function(datas){
+            var output = "";
+            datas.articles.forEach((posts,i) => {
+                output +=  ` <div>
+                   <img src=${posts.image} alt=${posts.name} width="100%">
+             </div>
+             <div>
+                <a href=${posts.url} target= "_blank"><h2>${posts.title}</h2></a> 
+                </div>
+             <div> 
+                  <p>${posts.description}</p> 
+             </div>`;   
+    })
+        document.querySelector("#timkiem").innerHTML= output;  
+    });
+}
+        </script>
+
+    </body>
+</html>
